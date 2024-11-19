@@ -1,33 +1,34 @@
 package org.example;
 
-public class Notes{
-    private int id;
-    private String saying;
-    private String author;
+public class Notes {
+    private int id; // 메모 아이디
+    private String saying; // 명언
+    private String author; // 작가
 
     public Notes(int id, String quote, String author) {
+        System.out.println("노트가 생성되었음 ");
         this.id = id;
         this.saying = quote;
         this.author = author;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public String getSaying(){
+    public String getSaying() {
         return saying;
     }
 
-    public void setSaying(){
+    public void setSaying(String saying) {
         this.saying = saying;
     }
 
-    public String getAuthor(){
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(){
+    public void setAuthor(String author) {
         this.author = author;
     }
 
