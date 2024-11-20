@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Storage {
-    private Map<Integer, Notes> notes;
+    private Map<Integer, Note> notes;
     private static final String FILE_NAME = "notes.dat";
 
     public Storage() {
@@ -17,7 +17,7 @@ public class Storage {
 
     }
 
-    public Map<Integer, Notes> loadNotes() {
+    public Map<Integer, Note> loadNotes() {
         return notes;
     }
 
@@ -25,7 +25,7 @@ public class Storage {
         return 0;
     }
 
-    public void saveNote(Notes note) {
+    public void saveNote(Note note) {
 
     }
 

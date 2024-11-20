@@ -1,11 +1,11 @@
 package org.example;
 
-public class Notes {
+public class Note {
     private int id; // 메모 아이디
     private String saying; // 명언
     private String author; // 작가
 
-    public Notes(int id, String quote, String author) {
+    public Note(int id, String quote, String author) {
         System.out.println("노트가 생성되었음 ");
         this.id = id;
         this.saying = quote;

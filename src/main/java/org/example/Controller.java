@@ -17,7 +17,7 @@ public class Controller {
     public void run() {
         while (true) {
             System.out.println("== 명언 앱 ==");
-            System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 도움말, 종료): ");
+            System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 종료): ");
             String command = scanner.nextLine();
 
             switch (command) {
@@ -40,7 +40,7 @@ public class Controller {
                     System.out.println("프로그램을 종료합니다.");
                     return;
                 default:
-                    System.out.println("유효하지 않은 명령어입니다. '도움말'을 입력하여 사용 가능한 명령어를 확인하세요.");
+                    System.out.println("유효하지 않은 명령어입니다. 사용 가능한 명령어를 확인하세요.");
             }
         }
     }
@@ -67,7 +67,7 @@ public class Controller {
         try {
             System.out.print("수정할 노트의 ID를 입력하세요: ");
             int noteId = Integer.parseInt(scanner.nextLine());
-            Notes note = noteManager.getNoteById(noteId);
+            Note note = noteManager.getNoteById(noteId);
             if (note != null) {
                 System.out.println("현재 명언: " + note.getSaying());
                 System.out.print("새로운 명언을 입력하세요: ");
