@@ -1,7 +1,9 @@
 package org.example;
 
-public class Exceptions {
-
+public class ExceptionHandler {
+    public static void handleException(Exception e) {
+        System.out.println(e.getMessage());
+    }
 }
 
 class NoteNotFoundException extends Exception {
