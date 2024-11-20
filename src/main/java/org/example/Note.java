@@ -5,10 +5,10 @@ public class Note {
     private String saying; // 명언
     private String author; // 작가
 
-    public Note(int id, String quote, String author) {
+    public Note(int id, String saying, String author) {
         System.out.println("노트가 생성되었음 ");
         this.id = id;
-        this.saying = quote;
+        this.saying = saying;
         this.author = author;
     }
 
