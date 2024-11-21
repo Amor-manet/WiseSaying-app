@@ -1,5 +1,7 @@
 package org.example;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
@@ -34,10 +36,10 @@ public class Storage {
         System.out.println("파일 경로: "+ DATA_DIRECTORY + "/  \n파일이름: "+fileName);
         try {
             objectMapper.writeValue(file, note); // Note 객체를 JSON으로 직렬화하여 파일로 저장
-            System.out.println("노트가 저장되었습니다: " + fileName);
+            System.out.println("노트가 저장되었습니다: " + file.getAbsolutePath() + fileName);
         } catch (IOException e) {
-            // IOException을 NoteSaveException으로 래핑하여 호출자에게 전달
-            throw new SaveException("노트를 저장하는 중 오류가 발생했습니다: " + note.getId(), e);
+            // IOException을 SaveException으로 래핑하여 호출자에게 전달
+            throw new SaveException(note.getId(), e);
         }
     }
 
@@ -49,23 +51,26 @@ public class Storage {
             throw new NoteNotFoundException(noteId);
         }
         if (!file.delete()){ // 파일이 지워졌는지 체크
-            throw new SaveException("노트를 삭제하는 중 오류가 발생했습니다: " , noteId);
+            throw new SaveException(noteId);
         }
     }
 
-    public Note loadNoteById(int noteId) throws NoteNotFoundException {
-        ObjectMapper mapper = new ObjectMapper();
-        String fileName = DATA_DIRECTORY + File.separator + noteId + ".json";
-        File file = new File(fileName);
+    public Note loadNoteById(int noteId) throws NoteNotFoundException, JsonParsingException {
+        String filePath = DATA_DIRECTORY+"/"+noteId+".json";
+        File file = new File(filePath);
 
-        if (!file.exists()) {
+        if (!file.exists()){ // 파일이 존재하는지 체크
             throw new NoteNotFoundException(noteId);
         }
         try {
-            return mapper.readValue(file, Note.class);
-        }catch (IOException e) {
-            e.printStackTrace();
-            throw new NoteNotFoundException(noteId);
+            // JSON 파일을 Note 객체로 반환
+            return objectMapper.readValue(file, Note.class);
+        } catch (JsonParseException | JsonMappingException e) {
+            // JSON 형식 오류 처리
+            throw new JsonParsingException(filePath, e);
+        } catch (IOException e) {
+            // 파일 읽기 중 발생한 일반적인 오류 처리
+            throw new JsonParsingException(e);
         }
     }
 
@@ -91,24 +96,15 @@ public class Storage {
 
 
     public int loadLastNoteId() {
-        File file = new File(LAST_ID_FILE_NAME);
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                return Integer.parseInt(reader.readLine());
-            } catch (IOException | NumberFormatException e) {
-                e.printStackTrace();
-                return 0;
-            }
-        } else {
-            return 0;
-        }
+
     }
 
-    public void saveLastNoteId(int lastNoteId) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LAST_ID_FILE_NAME))) {
+    public void saveLastNoteId(int lastNoteId) throws SaveException {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(LAST_ID_FILE_NAME))){
             writer.write(String.valueOf(lastNoteId));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new SaveException(lastNoteId);
         }
+
     }
 }

@@ -33,9 +33,6 @@ public class NoteController {
                 case "목록":
                     showNoteList();
                     break;
-//                case "도움말":
-//                    printHelp();
-//                    break;
                 case "종료":
                     System.out.println("프로그램을 종료합니다.");
                     return;
@@ -68,33 +65,25 @@ public class NoteController {
 
     private void updateNote() {
         try {
-            System.out.print("수정할 노트의 ID를 입력하세요: ");
-            int noteId = getNoteIdFromUser("삭제할 노트의 ID를 입력하세요: ");
-            Note note = noteManager.getNoteById(noteId);
-            if (note != null) {
-                System.out.println("현재 명언: " + note.getSaying());
-                System.out.print("새로운 명언을 입력하세요: ");
-                String newSaying = scanner.nextLine();
-                System.out.println("현재 작가: " + note.getAuthor());
-                System.out.print("새로운 작가를 입력하세요: ");
-                String newAuthor = scanner.nextLine();
+            int noteId = getNoteIdFromUser("수정할 노트의 ID를 입력하세요: ");
+            Note note = noteManager.load(noteId);
+            String newSaying = getStringInput("기존 명언: "+ note.getSaying() +"\n새로운 명언을 입력하세요: ");
+            String newAuthor = getStringInput("기존 작가: "+ note.getAuthor() +"\n새로운 작가를 입력하세요: ");
 
-            } else {
-                System.out.println("해당 ID의 노트가 존재하지 않습니다.");
-            }
-        } catch (NumberFormatException | InvalidInputFormatException e) {
-            System.out.println("ID는 숫자여야 합니다.");
-        }
-    }
+            note.setSaying(newSaying);
+            note.setAuthor(newAuthor);
 
-    private void showNoteList() {
-        try {
-            System.out.println("번호 /      명언      /  작가");
-            noteManager.listNotes();
-        } catch (Exception e) {
+            int fixedId = noteManager.update(note);
+            System.out.println( fixedId + "노트가 성공적으로 수정되었습니다.");
+
+        } catch ( EmptyInputException | InvalidInputFormatException e) { // 입력단계에서 발생하는 에러
+            ExceptionHandler.handleException(e);
+        } catch (SaveException | JsonParsingException | NoteNotFoundException e) {
+            // 파일 저장, 읽기, 접근 단계에서 발생하는 오류
             ExceptionHandler.handleException(e);
         }
     }
+
 
     private int getNoteIdFromUser(String message) throws InvalidInputFormatException{
         System.out.print(message);
@@ -120,11 +109,9 @@ public class NoteController {
         return input;
     }
 
+    private void showNoteList() {
 
+    }
 
-//    private void printHelp() {
-//        System.out.println("명령어 목록: 등록, 삭제, 수정, 목록, 도움말, 종료");
-//    }
-//
 
 }
