@@ -16,8 +16,8 @@ public class IdManager {
         return newId;
     }
 
-    public void saveId(){
-
+    public void saveId(int id) throws SaveException {
+        storage.saveIdFile(id);
     }
 
 
