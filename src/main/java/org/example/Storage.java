@@ -38,7 +38,7 @@ public class Storage {
             objectMapper.writeValue(file, note); // Note 객체를 JSON으로 직렬화하여 파일로 저장
             System.out.println("노트가 저장되었습니다: " + file.getAbsolutePath() + fileName);
         } catch (IOException e) {
-            // IOException을 SaveException으로 래핑하여 호출자에게 전달
+            // IOException을 SaveException으로 래핑하여 전달
             throw new SaveException(note.getId(), e);
         }
     }
@@ -99,7 +99,7 @@ public class Storage {
 
     }
 
-    public void saveLastNoteId(int lastNoteId) throws SaveException {
+    public void saveIdFile(int lastNoteId) throws SaveException {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(LAST_ID_FILE_NAME))){
             writer.write(String.valueOf(lastNoteId));
         } catch (IOException e) {
