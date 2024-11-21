@@ -1,39 +1,114 @@
 package org.example;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Storage {
-    private Map<Integer, Note> notes;
-    private static final String FILE_NAME = "notes.dat";
+    private static final String DATA_DIRECTORY = "db" + File.separator + "wiseSaying";
+    private static final String LAST_ID_FILE_NAME = DATA_DIRECTORY + File.separator + "lastId.txt";
+    private ObjectMapper objectMapper;
 
     public Storage() {
-        notes = new HashMap<>();
-        System.out.println("스토리지가 생성되었음 ");
-        loadFromFile();
+        createDataDirectory();
+        System.out.println("스토리지가 생성되었습니다.");
+        objectMapper = new ObjectMapper();
     }
 
-    private void loadFromFile() {
-
+    private void createDataDirectory() {
+        File directory = new File(DATA_DIRECTORY); // 파일 객체 생성
+        if (!directory.exists()) { // 만약에 파일 경로가 없을 경우
+            directory.mkdirs(); // 파일의 상위 디렉토리가 없을 경우 지정한 상위 폴더를 생성
+            System.out.println("디렉토리가 생성되었습니다: " + directory.getPath());
+        }
+        System.out.println("디렉토리가 이미 존재합니다: " + directory.getPath());
     }
 
-    public Map<Integer, Note> loadNotes() {
+    public void saveNote(Note note) throws SaveException {
+        String fileName = note.getId() + ".json"; // 파일이름 지정
+        File file = new File(DATA_DIRECTORY, fileName);
+        System.out.println("노트객체를 넘겨받은 파일이 생성되었습니다. " + "저장으로 넘어갑니다.");
+        System.out.println("파일 경로: "+ DATA_DIRECTORY + "/  \n파일이름: "+fileName);
+        try {
+            objectMapper.writeValue(file, note); // Note 객체를 JSON으로 직렬화하여 파일로 저장
+            System.out.println("노트가 저장되었습니다: " + fileName);
+        } catch (IOException e) {
+            // IOException을 NoteSaveException으로 래핑하여 호출자에게 전달
+            throw new SaveException("노트를 저장하는 중 오류가 발생했습니다: " + note.getId(), e);
+        }
+    }
+
+    public void deleteNote(int noteId) throws SaveException, NoteNotFoundException {
+        String fileName = noteId + ". json";
+        File file = new File(DATA_DIRECTORY,fileName);
+
+        if (!file.exists()){ // 파일이 존재하는지 체크
+            throw new NoteNotFoundException(noteId);
+        }
+        if (!file.delete()){ // 파일이 지워졌는지 체크
+            throw new SaveException("노트를 삭제하는 중 오류가 발생했습니다: " , noteId);
+        }
+    }
+
+    public Note loadNoteById(int noteId) throws NoteNotFoundException {
+        ObjectMapper mapper = new ObjectMapper();
+        String fileName = DATA_DIRECTORY + File.separator + noteId + ".json";
+        File file = new File(fileName);
+
+        if (!file.exists()) {
+            throw new NoteNotFoundException(noteId);
+        }
+        try {
+            return mapper.readValue(file, Note.class);
+        }catch (IOException e) {
+            e.printStackTrace();
+            throw new NoteNotFoundException(noteId);
+        }
+    }
+
+    public List<Note> loadAllNotes() {
+        File directory = new File(DATA_DIRECTORY);
+        File[] files = directory.listFiles((dir, name) -> name.endsWith(".json"));
+
+        List<Note> notes = new ArrayList<>();
+        if (files != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            for (File file : files) {
+                try {
+                    Note note = mapper.readValue(file, Note.class);
+                    notes.add(note);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return notes;
     }
 
-    public int getLastNoteId() {
-        return 0;
+
+
+    public int loadLastNoteId() {
+        File file = new File(LAST_ID_FILE_NAME);
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                return Integer.parseInt(reader.readLine());
+            } catch (IOException | NumberFormatException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        } else {
+            return 0;
+        }
     }
 
-    public void saveNote(Note note) {
-
-    }
-
-    public void deleteNote(int noteId) {
-
-    }
-
-    private void saveToFile() {
-
+    public void saveLastNoteId(int lastNoteId) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LAST_ID_FILE_NAME))) {
+            writer.write(String.valueOf(lastNoteId));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
