@@ -2,22 +2,22 @@ package org.example;
 
 import java.util.Scanner;
 
-public class Controller {
+public class NoteController {
 
     private NoteManager noteManager;
     private Scanner scanner;
 
-    public Controller() {
-        Storage storage = new Storage();            // Storage 객체를 한 번만 생성
+    public NoteController() {
+        Storage storage = new Storage();// Storage 객체를 한 번만 생성
         noteManager = new NoteManager(storage);
         scanner = new Scanner(System.in);
         System.out.println("컨트롤러가 생성되었음 ");
     }
 
-    public void run() {
+    public void ctrrun() {
         while (true) {
             System.out.println("== 명언 앱 ==");
-            System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 종료): ");
+            System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 랜덤, 종료): ");
             String command = scanner.nextLine();
 
             switch (command) {
@@ -31,7 +31,7 @@ public class Controller {
                     updateNote();
                     break;
                 case "목록":
-                    noteManager.listNotes();
+                    showNoteList();
                     break;
 //                case "도움말":
 //                    printHelp();
@@ -46,20 +46,23 @@ public class Controller {
     }
 
     private void registerNote() {
-        System.out.print("명언을 입력하세요: ");
-        String saying = scanner.nextLine();
-        System.out.print("작가를 입력하세요: ");
-        String author = scanner.nextLine();
-        noteManager.register(saying, author);
+        try {
+            String newSaying = getStringInput("명언을 입력하세요: ");
+            String newAuthor = getStringInput("작가를 입력하세요: ");
+            int id = noteManager.register(newSaying, newAuthor);
+            System.out.println( id + "번 노트가 성공적으로 등록되었습니다.");
+        } catch (Exception e){
+            ExceptionHandler.handleException(e);
+        }
     }
 
     private void deleteNote() {
         try {
-            System.out.print("삭제할 노트의 ID를 입력하세요: ");
-            int noteId = Integer.parseInt(scanner.nextLine());
+            int noteId = getNoteIdFromUser("삭제할 노트의 ID를 입력하세요: ");
             noteManager.delete(noteId);
-        } catch (NumberFormatException e) {
-            System.out.println("ID는 숫자여야 합니다.");
+            System.out.println( noteId + "번 노트가 성공적으로 삭제되었습니다.");
+        } catch (InvalidInputFormatException e) {
+            ExceptionHandler.handleException(e);
         }
     }
 
@@ -84,9 +87,44 @@ public class Controller {
         }
     }
 
+    private void showNoteList() {
+        try {
+            System.out.println("번호 /      명언      /  작가");
+            noteManager.listNotes();
+        } catch (Exception e) {
+            ExceptionHandler.handleException(e);
+        }
+    }
+
+    private int getNoteIdFromUser(String message) throws InvalidInputFormatException{
+        System.out.print(message);
+        String input = scanner.nextLine().trim();
+        int noteId;
+        try{
+            noteId = Integer.parseInt(input);
+        } catch (NumberFormatException e){
+            throw new InvalidInputFormatException();
+        }
+        if(noteId < 0) {
+            System.out.println("ID는 0 이상입니다. ");;
+        }
+        return noteId;
+    }
+
+    private String getStringInput(String message) throws EmptyInputException{
+        System.out.print(message);
+        String input = scanner.nextLine().trim();
+        if(input.isEmpty()){
+            throw new EmptyInputException();
+        }
+        return input;
+    }
+
+
+
 //    private void printHelp() {
 //        System.out.println("명령어 목록: 등록, 삭제, 수정, 목록, 도움말, 종료");
 //    }
-
+//
 
 }
