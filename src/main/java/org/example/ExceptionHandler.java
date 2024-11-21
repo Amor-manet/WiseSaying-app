@@ -7,20 +7,8 @@ public class ExceptionHandler {
 }
 
 class NoteNotFoundException extends Exception {
-    private int noteId;
-
     public NoteNotFoundException(int noteId) {
         super("해당 ID의 노트가 존재하지 않습니다." + noteId);
-        this.noteId = noteId;
-    }
-}
-
-class InvalidNoteIdException extends Exception {
-    private int invalidId;
-
-    public InvalidNoteIdException(int invalidId) {
-        super("유효하지 않은 노트 ID입니다." + invalidId);
-        this.invalidId = invalidId;
     }
 }
 
@@ -32,12 +20,22 @@ class EmptyInputException extends Exception {
 
 class InvalidInputFormatException extends Exception {
     public InvalidInputFormatException() {
-        super("ID는 숫자여야 합니다."); // 사용자가 입력한 값을 보여줘도 좋을듯
+        super("숫자 ID를 입력해주세요. "); // 사용자가 입력한 값을 보여줘도 좋을듯
     }
 }
 
-class EmptyNotesException extends Exception {
-    public EmptyNotesException() {
+class EmptySayingException extends Exception {
+    public EmptySayingException() {
         super("작성된 명언이 없습니다. 명언 등록을 진행해주세요."); // 사용자가 입력한 값을 보여줘도 좋을듯
+    }
+}
+
+class SaveException extends Exception {
+    public SaveException(String message, int id) {
+        super(message + id);
+    }
+
+    public SaveException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
