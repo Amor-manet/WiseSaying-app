@@ -1,6 +1,9 @@
 package org.example;
 
 public class ExceptionHandler {
+
+
+
     public static void handleException(Exception e) {
         System.out.println(e.getMessage());
     }
@@ -8,7 +11,7 @@ public class ExceptionHandler {
 
 class NoteNotFoundException extends Exception {
     public NoteNotFoundException(int noteId) {
-        super("해당 ID의 노트가 존재하지 않습니다." + noteId);
+        super("해당 ID의 노트가 존재하지 않습니다. ID:" + noteId);
     }
 }
 
@@ -31,11 +34,19 @@ class EmptySayingException extends Exception {
 }
 
 class SaveException extends Exception {
-    public SaveException(String message, int id) {
-        super(message + id);
+    public SaveException(int id) {
+        super("노트를 저장하는 중 오류가 발생했습니다. " + id);
     }
+    public SaveException(int id, Throwable cause) {
+        super("노트를 저장하는 중 오류가 발생했습니다: " + id + cause);
+    }
+}
 
-    public SaveException(String message, Throwable cause) {
-        super(message, cause);
+class JsonParsingException extends Exception {
+    public JsonParsingException(Throwable cause) {
+        super("제이슨이 존재하지만 파일을 읽어 올 수 없습니다. " + cause);
+    }
+    public JsonParsingException(String filePath, Throwable cause) {
+        super("JSON 파싱 오류: " + filePath + cause);
     }
 }
