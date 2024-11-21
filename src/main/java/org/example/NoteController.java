@@ -49,9 +49,9 @@ public class NoteController {
         try {
             String newSaying = getStringInput("명언을 입력하세요: ");
             String newAuthor = getStringInput("작가를 입력하세요: ");
-            int id = noteManager.register(newSaying, newAuthor);
-            System.out.println( id + "번 노트가 성공적으로 등록되었습니다.");
-        } catch (Exception e){
+            int noteid = noteManager.register(newSaying, newAuthor);
+            System.out.println( noteid + "번 노트가 성공적으로 등록되었습니다.");
+        } catch (EmptyInputException | SaveException e ){
             ExceptionHandler.handleException(e);
         }
     }
@@ -61,7 +61,7 @@ public class NoteController {
             int noteId = getNoteIdFromUser("삭제할 노트의 ID를 입력하세요: ");
             noteManager.delete(noteId);
             System.out.println( noteId + "번 노트가 성공적으로 삭제되었습니다.");
-        } catch (InvalidInputFormatException e) {
+        } catch (InvalidInputFormatException | NoteNotFoundException | SaveException e) {
             ExceptionHandler.handleException(e);
         }
     }
@@ -69,7 +69,7 @@ public class NoteController {
     private void updateNote() {
         try {
             System.out.print("수정할 노트의 ID를 입력하세요: ");
-            int noteId = Integer.parseInt(scanner.nextLine());
+            int noteId = getNoteIdFromUser("삭제할 노트의 ID를 입력하세요: ");
             Note note = noteManager.getNoteById(noteId);
             if (note != null) {
                 System.out.println("현재 명언: " + note.getSaying());
@@ -78,11 +78,11 @@ public class NoteController {
                 System.out.println("현재 작가: " + note.getAuthor());
                 System.out.print("새로운 작가를 입력하세요: ");
                 String newAuthor = scanner.nextLine();
-                noteManager.update(noteId, newSaying, newAuthor);
+
             } else {
                 System.out.println("해당 ID의 노트가 존재하지 않습니다.");
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | InvalidInputFormatException e) {
             System.out.println("ID는 숫자여야 합니다.");
         }
     }
