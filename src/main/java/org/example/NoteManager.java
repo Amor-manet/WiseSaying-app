@@ -9,7 +9,7 @@ public class NoteManager {
     public NoteManager(Storage storage) throws ReadFileException {
         this.idManager = new IdManager(storage);
         this.storage = storage;
-        System.out.println("노트매니저 생성되었음");
+        //System.out.println("노트매니저 생성되었음");
     }
 
     public int register(String saying, String author) throws SaveFileException, ReadFileException {

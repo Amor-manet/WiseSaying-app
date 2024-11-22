@@ -5,11 +5,9 @@ import java.util.Scanner;
 public class App {
 
     Scanner scanner = new Scanner(System.in);
-
     public void run(){
 
         NoteController noteController = new NoteController();
-        //noteController.noteConAct();
 
         while (true) {
             System.out.println("== 명언 앱 ==");
@@ -28,7 +26,6 @@ public class App {
                     noteController.updateNote();
                     break;
                 case "목록":
-                    noteController.buildNotes();
                     noteController.showNoteList();
                     break;
                 case "빌드":

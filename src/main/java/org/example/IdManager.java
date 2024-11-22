@@ -2,7 +2,7 @@ package org.example;
 
 public class IdManager {
     private Storage storage;
-    public int lastId;
+
 
 
     public IdManager(Storage storage) {
@@ -11,7 +11,7 @@ public class IdManager {
 
     public int generateId() throws ReadFileException {
         int newid = storage.loadLastNoteId() + 1;
-        System.out.println("ID 카운터 증가");
+        //System.out.println("ID 카운터 증가");
         return newid;
     }
 

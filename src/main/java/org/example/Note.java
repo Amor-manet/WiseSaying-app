@@ -10,7 +10,7 @@ public class Note {
     }
 
     public Note(int id, String saying, String author) {
-        System.out.println("노트가 생성되었음 ");
+
         this.id = id;
         this.saying = saying;
         this.author = author;

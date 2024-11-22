@@ -25,12 +25,6 @@ class InvalidInputFormatException extends Exception {
     }
 }
 
-class EmptySayingException extends Exception {
-    public EmptySayingException() {
-        super("작성된 명언이 없습니다. 명언 등록을 진행해주세요."); // 사용자가 입력한 값을 보여줘도 좋을듯
-    }
-}
-
 class SaveFileException extends Exception {
     public SaveFileException(int id) {
         super("파일을 저장하는 중 오류가 발생했습니다. " + id);
@@ -45,7 +39,7 @@ class SaveFileException extends Exception {
     }
 }
 
-class ReadFileException extends Exception {
+ class ReadFileException extends Exception {
     public ReadFileException(int id) {
         super("파일을 읽는 중 오류가 발생했습니다. " + id);
     }
@@ -76,3 +70,9 @@ class BuildFileException extends Exception {
         super("파일을 빌드 하는 중 오류가 발생했습니다: " + cause);
     }
 }
+
+//class EmptySayingException extends Exception {
+//    public EmptySayingException() {
+//        super("작성된 명언이 없습니다. 명언 등록을 진행해주세요."); // 사용자가 입력한 값을 보여줘도 좋을듯
+//    }
+//}

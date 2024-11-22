@@ -13,43 +13,12 @@ public class NoteController {
             Storage storage = new Storage();// Storage 객체를 한 번만 생성
             noteManager = new NoteManager(storage);
             scanner = new Scanner(System.in);
-            System.out.println("컨트롤러가 생성되었음 ");
+            //System.out.println("컨트롤러가 생성되었음 ");
+
         } catch (ReadFileException e) {
             ExceptionHandler.handleException(e);
         }
     }
-
-//    public void noteConAct() {
-//        while (true) {
-//            System.out.println("== 명언 앱 ==");
-//            System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 종료): ");
-//            String command = scanner.nextLine();
-//
-//            switch (command) {
-//                case "등록":
-//                    registerNote();
-//                    break;
-//                case "삭제":
-//                    deleteNote();
-//                    break;
-//                case "수정":
-//                    updateNote();
-//                    break;
-//                case "목록":
-//                    buildNotes();
-//                    showNoteList();
-//                    break;
-//                case "빌드":
-//                    buildNotes();
-//                    break;
-//                case "종료":
-//                    System.out.println("프로그램을 종료합니다.");
-//                    return;
-//                default:
-//                    System.out.println("유효하지 않은 명령어입니다. 사용 가능한 명령어를 확인하세요.");
-//            }
-//        }
-//    }
 
     public void registerNote() {
         try {
@@ -101,11 +70,9 @@ public class NoteController {
         } catch (NumberFormatException e){
             throw new InvalidInputFormatException();
         }
-
         if(noteId < 0) {
             System.out.println("ID는 0 이상입니다. ");
         }
-
         return noteId;
     }
 
@@ -130,20 +97,19 @@ public class NoteController {
 
     public void showNoteList() {
         try {
+            noteManager.build();
             List<Note> notes = noteManager.loadNotes();
-
             // 목록이 비어 있는 경우 처리
             if (notes.isEmpty()) {
                 System.out.println("현재 저장된 명언이 없습니다.");
                 return;
             }
-
             // 목록 출력
-            System.out.println("저장된 명언 목록:");
+            System.out.println(" 번호 /     명언      /   작가  ");
             for (Note note : notes) {
-                System.out.println(note.getId() + ". " + note.getSaying() + " - " + note.getAuthor());
+                System.out.println(" " + note.getId() + " / " + note.getSaying() + " / " + note.getAuthor());
             }
-        } catch (ReadFileException e) {
+        } catch (ReadFileException | BuildFileException | SaveFileException e) {
             ExceptionHandler.handleException(e);
         }
     }
