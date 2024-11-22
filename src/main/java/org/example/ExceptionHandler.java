@@ -1,10 +1,6 @@
 package org.example;
 
-import java.io.IOException;
-
 public class ExceptionHandler {
-
-
 
     public static void handleException(Exception e) {
         System.out.println(e.getMessage());
@@ -35,17 +31,26 @@ class EmptySayingException extends Exception {
     }
 }
 
-class SaveException extends Exception {
-    public SaveException(int id) {
+class SaveFileException extends Exception {
+    public SaveFileException(int id) {
         super("파일을 저장하는 중 오류가 발생했습니다. " + id);
     }
-    public SaveException(int id, IOException cause) {
+    public SaveFileException(int id, Throwable cause) {
         super("파일을 저장하는 중 오류가 발생했습니다: " + id + cause);
     }
 }
 
+class ReadFileException extends Exception {
+    public ReadFileException(int id) {
+        super("파일을 읽는 중 오류가 발생했습니다. " + id);
+    }
+    public ReadFileException(Throwable cause) {
+        super("파일을 읽는 중 오류가 발생했습니다: " + cause);
+    }
+}
+
 class JsonParsingException extends Exception {
-    public JsonParsingException(IOException cause) {
+    public JsonParsingException(Exception cause) {
         super("제이슨이 존재하지만 파일을 읽어 올 수 없습니다. " + cause);
     }
     public JsonParsingException(String filePath, Throwable cause) {
