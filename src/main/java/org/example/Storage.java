@@ -18,7 +18,7 @@ public class Storage {
 
     public Storage() {
         createDataDirectory();
-        System.out.println("스토리지가 생성되었습니다.");
+        //System.out.println("스토리지가 생성되었습니다.");
         objectMapper = new ObjectMapper();
     }
 
@@ -26,19 +26,19 @@ public class Storage {
         File directory = new File(DATA_DIRECTORY); // 파일 객체 생성
         if (!directory.exists()) { // 만약에 파일 경로가 없을 경우
             directory.mkdirs(); // 파일의 상위 디렉토리가 없을 경우 지정한 상위 폴더를 생성
-            System.out.println("디렉토리가 생성되었습니다: " + directory.getPath());
+            //System.out.println("디렉토리가 생성되었습니다: " + directory.getPath());
         }
-        System.out.println("디렉토리가 이미 존재합니다: " + directory.getPath());
+       // System.out.println("디렉토리가 이미 존재합니다: " + directory.getPath());
     }
 
     public void saveNote(Note note) throws SaveFileException {
         String fileName = note.getId() + ".json"; // 파일이름 지정
         File file = new File(DATA_DIRECTORY, fileName);
-        System.out.println("노트객체를 넘겨받은 파일이 생성되었습니다. " + "저장으로 넘어갑니다.");
-        System.out.println("파일 경로: "+ DATA_DIRECTORY + "/  \n파일이름: "+fileName);
+       // System.out.println("노트객체를 넘겨받은 파일이 생성되었습니다. " + "저장으로 넘어갑니다.");
+       // System.out.println("파일 경로: "+ DATA_DIRECTORY + "/  \n파일이름: "+fileName);
         try {
             objectMapper.writeValue(file, note); // Note 객체를 JSON으로 직렬화하여 파일로 저장
-            System.out.println("노트가 저장되었습니다: " + file.getAbsolutePath() + fileName);
+           // System.out.println("노트가 저장되었습니다: " + file.getAbsolutePath() + fileName);
         } catch (IOException e) {
             // IOException을 SaveException으로 래핑하여 전달
             throw new SaveFileException(note.getId(), e);
@@ -101,6 +101,7 @@ public class Storage {
         }
     }
 
+    // 데이터 파일을 빌드하는 메소드
     public void buildDataFile() throws BuildFileException, SaveFileException {
 
         File directory = new File(DATA_DIRECTORY); // 파일이 저장된 디렉토리
@@ -130,13 +131,13 @@ public class Storage {
             }
         }
 
-        // **ID를 기준으로 Note 리스트 정렬**
+        // Id를 기준으로 Note 리스트 정렬
         notes.sort(Comparator.comparingInt(Note::getId));
 
         // data.json 파일로 Note 리스트 저장
         try {
             objectMapper.writeValue(buildFile, notes); // Note 리스트 -> data.json 저장
-            System.out.println("모든 명언이 data.json 파일에 성공적으로 저장되었습니다.");
+            //System.out.println("모든 명언이 data.json 파일에 성공적으로 저장되었습니다.");
         } catch (IOException e) {
             throw new SaveFileException(e);
         }
@@ -145,17 +146,12 @@ public class Storage {
     public List<Note> loadDataFile() throws ReadFileException {
         File dataFile = new File(DATA_DIRECTORY, "data.json");
 
-        // 파일이 존재하는지 확인
-        if (!dataFile.exists()) {
-            throw new ReadFileException("data.json 파일이 존재하지 않습니다.");
-        }
-
         try {
             // JSON 파일을 Note 객체 리스트로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(dataFile, new TypeReference<List<Note>>() {});
         } catch (IOException e) {
-            throw new ReadFileException("data.json 파일 읽기 중 오류가 발생했습니다.");
+            throw new ReadFileException(e);
         }
     }
 
@@ -165,9 +161,9 @@ public class Storage {
 
         try {
             objectMapper.writeValue(buildFile, new ArrayList<>()); // 빈 리스트를 JSON 파일로 직렬화
-            System.out.println("빈 data.json 파일이 생성되었습니다: " + buildFile.getAbsolutePath());
+
         } catch (IOException e) {
-            throw new BuildFileException(new IllegalStateException("빈 data.json 파일 생성 오류", e));
+            throw new BuildFileException();
         }
     }
 
