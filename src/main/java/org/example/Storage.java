@@ -1,11 +1,13 @@
 package org.example;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -44,7 +46,7 @@ public class Storage {
     }
 
     public void deleteNote(int noteId) throws SaveFileException, NoteNotFoundException {
-        String fileName = noteId + ". json";
+        String fileName = noteId + ".json";
         File file = new File(DATA_DIRECTORY,fileName);
 
         if (!file.exists()){ // 파일이 존재하는지 체크
@@ -74,12 +76,7 @@ public class Storage {
         }
     }
 
-    public loadAllNotes() {
-
-    }
-
-
-
+    // 마지막 아이디 불러오기
     public int loadLastNoteId() throws ReadFileException {
         File file = new File(LAST_ID_FILE_NAME);
 
@@ -103,4 +100,65 @@ public class Storage {
             throw new SaveFileException(lastNoteId);
         }
     }
+
+    public void buildDataFile() throws BuildFileException, SaveFileException {
+
+        File directory = new File(DATA_DIRECTORY); // 파일이 저장된 디렉토리
+        File buildFile = new File(DATA_DIRECTORY, "data.json");
+
+        // 디렉토리 유효성 검사
+        if(!directory.exists() || !directory.isDirectory()){
+            throw new BuildFileException();
+        }
+        // 제이슨 파일 필터링
+        File[] files = directory.listFiles((dir, name) -> name.endsWith(".json") && !name.equals("data.json"));
+        if(files == null || files.length == 0){ // directory.listFiles()이 null 값인 경우, 배열에 넣을 알맞은 파일이 없어서 배일이 0일 경우
+            throw new BuildFileException();
+        }
+
+        List<Note> notes = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // 여기부터 아래는 다시 체크해볼 필요가 있음
+        for (File file : files) {
+            try {
+                Note note = objectMapper.readValue(file, Note.class); // JSON -> Note 객체 변환
+                notes.add(note); // 리스트에 추가
+            } catch (IOException e) {
+                throw new BuildFileException(e);
+            }
+        }
+
+        // **ID를 기준으로 Note 리스트 정렬**
+        notes.sort(Comparator.comparingInt(Note::getId));
+
+        // data.json 파일로 Note 리스트 저장
+        try {
+            objectMapper.writeValue(buildFile, notes); // Note 리스트 -> data.json 저장
+            System.out.println("모든 명언이 data.json 파일에 성공적으로 저장되었습니다.");
+        } catch (IOException e) {
+            throw new SaveFileException(e);
+        }
+    }
+
+    public List<Note> loadDataFile() throws ReadFileException {
+        File dataFile = new File(DATA_DIRECTORY, "data.json");
+
+        // 파일이 존재하는지 확인
+        if (!dataFile.exists()) {
+            throw new ReadFileException("data.json 파일이 존재하지 않습니다.");
+        }
+
+        try {
+            // JSON 파일을 Note 객체 리스트로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(dataFile, new TypeReference<List<Note>>() {});
+        } catch (IOException e) {
+            throw new ReadFileException("data.json 파일 읽기 중 오류가 발생했습니다.");
+        }
+    }
+
+
+
+
 }
