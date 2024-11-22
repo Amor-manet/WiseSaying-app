@@ -5,6 +5,10 @@ public class Note {
     private String saying; // 명언
     private String author; // 작가
 
+    public Note() {
+    // 잭슨 라이브러리에서 역직렬화를 구현하려면 빈 생성자가 필요함
+    }
+
     public Note(int id, String saying, String author) {
         System.out.println("노트가 생성되었음 ");
         this.id = id;
