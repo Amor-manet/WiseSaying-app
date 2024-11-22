@@ -35,6 +35,11 @@ class SaveFileException extends Exception {
     public SaveFileException(int id) {
         super("파일을 저장하는 중 오류가 발생했습니다. " + id);
     }
+
+    public SaveFileException(Throwable cause) {
+        super("빌드파일을 저장하는 중 오류가 발생했습니다: " + cause);
+    }
+
     public SaveFileException(int id, Throwable cause) {
         super("파일을 저장하는 중 오류가 발생했습니다: " + id + cause);
     }
@@ -47,6 +52,9 @@ class ReadFileException extends Exception {
     public ReadFileException(Throwable cause) {
         super("파일을 읽는 중 오류가 발생했습니다: " + cause);
     }
+    public ReadFileException(String message) {
+        super(message);
+    }
 }
 
 class JsonParsingException extends Exception {
@@ -55,5 +63,16 @@ class JsonParsingException extends Exception {
     }
     public JsonParsingException(String filePath, Throwable cause) {
         super("JSON 파싱 오류: " + filePath + cause);
+    }
+}
+
+class BuildFileException extends Exception {
+
+    public BuildFileException() {
+        super("빌드 파일이 위치할 디렉토리가 없거나 빌드할 파일이 없습니다.");
+    }
+
+    public BuildFileException(Throwable cause) {
+        super("파일을 빌드 하는 중 오류가 발생했습니다: " + cause);
     }
 }
