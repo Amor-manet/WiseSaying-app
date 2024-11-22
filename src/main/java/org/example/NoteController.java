@@ -7,7 +7,7 @@ public class NoteController {
     private NoteManager noteManager;
     private Scanner scanner;
 
-    public NoteController() {
+    public NoteController() throws ReadFileException {
         Storage storage = new Storage();// Storage 객체를 한 번만 생성
         noteManager = new NoteManager(storage);
         scanner = new Scanner(System.in);
@@ -48,7 +48,7 @@ public class NoteController {
             String newAuthor = getStringInput("작가를 입력하세요: ");
             int noteid = noteManager.register(newSaying, newAuthor);
             System.out.println( noteid + "번 노트가 성공적으로 등록되었습니다.");
-        } catch (EmptyInputException | SaveException e ){
+        } catch (EmptyInputException | SaveFileException e ){
             ExceptionHandler.handleException(e);
         }
     }
@@ -58,7 +58,7 @@ public class NoteController {
             int noteId = getNoteIdFromUser("삭제할 노트의 ID를 입력하세요: ");
             noteManager.delete(noteId);
             System.out.println( noteId + "번 노트가 성공적으로 삭제되었습니다.");
-        } catch (InvalidInputFormatException | NoteNotFoundException | SaveException e) {
+        } catch (InvalidInputFormatException | NoteNotFoundException | SaveFileException e) {
             ExceptionHandler.handleException(e);
         }
     }
@@ -78,10 +78,14 @@ public class NoteController {
 
         } catch ( EmptyInputException | InvalidInputFormatException e) { // 입력단계에서 발생하는 에러
             ExceptionHandler.handleException(e);
-        } catch (SaveException | JsonParsingException | NoteNotFoundException e) {
+        } catch (SaveFileException | JsonParsingException | NoteNotFoundException e) {
             // 파일 저장, 읽기, 접근 단계에서 발생하는 오류
             ExceptionHandler.handleException(e);
         }
+    }
+
+    private void showNoteList() {
+
     }
 
 
@@ -109,9 +113,7 @@ public class NoteController {
         return input;
     }
 
-    private void showNoteList() {
 
-    }
 
 
 }

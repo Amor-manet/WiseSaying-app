@@ -4,13 +4,13 @@ public class NoteManager {
     private Storage storage;
     private IdManager idManager;
 
-    public NoteManager(Storage storage) {
+    public NoteManager(Storage storage) throws ReadFileException {
         this.idManager = new IdManager(storage);
         this.storage = storage;
         System.out.println("노트매니저 생성되었음");
     }
 
-    public int register(String saying, String author) throws SaveException{
+    public int register(String saying, String author) throws SaveFileException {
 
         int id = idManager.generateId();
         Note newNote = new Note(id, saying, author);
@@ -20,7 +20,7 @@ public class NoteManager {
 
     }
 
-    public void delete(int noteId) throws SaveException, NoteNotFoundException {
+    public void delete(int noteId) throws SaveFileException, NoteNotFoundException {
 
         storage.deleteNote(noteId);
     }
@@ -31,7 +31,7 @@ public class NoteManager {
         return storage.loadNoteById(noteId);
     }
 
-    public int update(Note note) throws SaveException {
+    public int update(Note note) throws SaveFileException {
 
         storage.saveNote(note);
         return note.getId();
