@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 public class NoteManager {
     private Storage storage;
     private IdManager idManager;
@@ -10,14 +12,14 @@ public class NoteManager {
         System.out.println("노트매니저 생성되었음");
     }
 
-    public int register(String saying, String author) throws SaveFileException {
+    public int register(String saying, String author) throws SaveFileException, ReadFileException {
 
         int id = idManager.generateId();
         Note newNote = new Note(id, saying, author);
         storage.saveNote(newNote);
         idManager.saveId(id);
-        return id;
 
+        return id;
     }
 
     public void delete(int noteId) throws SaveFileException, NoteNotFoundException {
@@ -31,12 +33,22 @@ public class NoteManager {
         return storage.loadNoteById(noteId);
     }
 
-    public int update(Note note) throws SaveFileException {
+    public int update(int noteId, String newSaying, String newAuthor) throws SaveFileException, NoteNotFoundException, JsonParsingException {
 
+        Note note = storage.loadNoteById(noteId);
+        note.setSaying(newSaying);
+        note.setAuthor(newAuthor);
         storage.saveNote(note);
+
         return note.getId();
     }
 
+    public void build() throws BuildFileException, SaveFileException {
+        storage.buildDataFile();
+    }
 
+    public List<Note> loadNotes() throws ReadFileException {
+        return storage.loadDataFile();
+    }
 
 }
