@@ -5,18 +5,18 @@ public class IdManager {
     public int lastId;
 
 
-    public IdManager(Storage storage){
+    public IdManager(Storage storage) throws ReadFileException {
         this.lastId = storage.loadLastNoteId();
         this.storage = storage;
     }
 
     public int generateId(){
-        int newId = lastId + 1;
+        int newid = lastId + 1;
         System.out.println("ID 카운터 증가");
-        return newId;
+        return newid;
     }
 
-    public void saveId(int id) throws SaveException {
+    public void saveId(int id) throws SaveFileException {
         storage.saveIdFile(id);
     }
 
