@@ -7,7 +7,7 @@ public class App {
     Scanner scanner = new Scanner(System.in);
     public void run(){
 
-        NoteController noteController = new NoteController();
+        WiseSayingController wiseSayingController = new WiseSayingController();
 
         while (true) {
             System.out.println("== 명언 앱 ==");
@@ -17,19 +17,19 @@ public class App {
 
             switch (command) {
                 case "등록":
-                    noteController.registerNote();
+                    wiseSayingController.registerWiseSay();
                     break;
                 case "삭제":
-                    noteController.deleteNote();
+                    wiseSayingController.deleteWiseSay();
                     break;
                 case "수정":
-                    noteController.updateNote();
+                    wiseSayingController.updateWiseSay();
                     break;
                 case "목록":
-                    noteController.showNoteList();
+                    wiseSayingController.showWiseSayList();
                     break;
                 case "빌드":
-                    noteController.buildNotes();
+                    wiseSayingController.buildWiseSay();
                     break;
                 case "종료":
                     System.out.println("프로그램을 종료합니다.");

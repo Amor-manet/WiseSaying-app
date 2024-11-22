@@ -7,9 +7,9 @@ public class ExceptionHandler {
     }
 }
 
-class NoteNotFoundException extends Exception {
-    public NoteNotFoundException(int noteId) {
-        super("해당 ID의 노트가 존재하지 않습니다. ID:" + noteId);
+class SayNotFoundException extends Exception {
+    public SayNotFoundException(int noteId) {
+        super("해당 ID의 명언이 존재하지 않습니다. ID:" + noteId);
     }
 }
 
