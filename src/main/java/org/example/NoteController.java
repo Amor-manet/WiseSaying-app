@@ -19,50 +19,50 @@ public class NoteController {
         }
     }
 
-    public void ctrrun() {
-        while (true) {
-            System.out.println("== 명언 앱 ==");
-            System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 랜덤, 종료): ");
-            String command = scanner.nextLine();
+//    public void noteConAct() {
+//        while (true) {
+//            System.out.println("== 명언 앱 ==");
+//            System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 종료): ");
+//            String command = scanner.nextLine();
+//
+//            switch (command) {
+//                case "등록":
+//                    registerNote();
+//                    break;
+//                case "삭제":
+//                    deleteNote();
+//                    break;
+//                case "수정":
+//                    updateNote();
+//                    break;
+//                case "목록":
+//                    buildNotes();
+//                    showNoteList();
+//                    break;
+//                case "빌드":
+//                    buildNotes();
+//                    break;
+//                case "종료":
+//                    System.out.println("프로그램을 종료합니다.");
+//                    return;
+//                default:
+//                    System.out.println("유효하지 않은 명령어입니다. 사용 가능한 명령어를 확인하세요.");
+//            }
+//        }
+//    }
 
-            switch (command) {
-                case "등록":
-                    registerNote();
-                    break;
-                case "삭제":
-                    deleteNote();
-                    break;
-                case "수정":
-                    updateNote();
-                    break;
-                case "목록":
-                    buildNotes();
-                    showNoteList();
-                    break;
-                case "빌드":
-                    buildNotes();
-                    break;
-                case "종료":
-                    System.out.println("프로그램을 종료합니다.");
-                    return;
-                default:
-                    System.out.println("유효하지 않은 명령어입니다. 사용 가능한 명령어를 확인하세요.");
-            }
-        }
-    }
-
-    private void registerNote() {
+    public void registerNote() {
         try {
             String newSaying = getStringInput("명언을 입력하세요: ");
             String newAuthor = getStringInput("작가를 입력하세요: ");
-            int noteid = noteManager.register(newSaying, newAuthor);
-            System.out.println( noteid + "번 노트가 성공적으로 등록되었습니다.");
+            int noteId = noteManager.register(newSaying, newAuthor);
+            System.out.println( noteId + "번 노트가 성공적으로 등록되었습니다.");
         } catch (EmptyInputException | SaveFileException | ReadFileException e ){
             ExceptionHandler.handleException(e);
         }
     }
 
-    private void deleteNote() {
+    public void deleteNote() {
         try {
             int noteId = getNoteIdFromUser("삭제할 노트의 ID를 입력하세요: ");
             noteManager.delete(noteId);
@@ -72,7 +72,7 @@ public class NoteController {
         }
     }
 
-    private void updateNote() {
+    public void updateNote() {
         try {
             int noteId = getNoteIdFromUser("수정할 노트의 ID를 입력하세요: ");
             Note note = noteManager.load(noteId); // 기존에 있던 노트객체를 불러옴
@@ -103,7 +103,7 @@ public class NoteController {
         }
 
         if(noteId < 0) {
-            System.out.println("ID는 0 이상입니다. ");;
+            System.out.println("ID는 0 이상입니다. ");
         }
 
         return noteId;
@@ -119,7 +119,7 @@ public class NoteController {
     }
 
     // 코드 체크 필요
-    private void buildNotes() {
+    public void buildNotes() {
         try {
             noteManager.build();
             System.out.println("모든 명언이 성공적으로 빌드되었습니다.");
@@ -128,7 +128,7 @@ public class NoteController {
         }
     }
 
-    private void showNoteList() {
+    public void showNoteList() {
         try {
             List<Note> notes = noteManager.loadNotes();
 
