@@ -113,6 +113,7 @@ public class Storage {
         // 제이슨 파일 필터링
         File[] files = directory.listFiles((dir, name) -> name.endsWith(".json") && !name.equals("data.json"));
         if(files == null || files.length == 0){ // directory.listFiles()이 null 값인 경우, 배열에 넣을 알맞은 파일이 없어서 배일이 0일 경우
+            createEmptyJsonFile(buildFile);
             throw new BuildFileException();
         }
 
@@ -158,6 +159,17 @@ public class Storage {
         }
     }
 
+    // 빈 JSON 파일을 생성하는 메서드
+    private void createEmptyJsonFile(File buildFile) throws BuildFileException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            objectMapper.writeValue(buildFile, new ArrayList<>()); // 빈 리스트를 JSON 파일로 직렬화
+            System.out.println("빈 data.json 파일이 생성되었습니다: " + buildFile.getAbsolutePath());
+        } catch (IOException e) {
+            throw new BuildFileException(new IllegalStateException("빈 data.json 파일 생성 오류", e));
+        }
+    }
 
 
 
