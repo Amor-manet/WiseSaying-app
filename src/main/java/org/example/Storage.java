@@ -29,7 +29,7 @@ public class Storage {
         System.out.println("디렉토리가 이미 존재합니다: " + directory.getPath());
     }
 
-    public void saveNote(Note note) throws SaveException {
+    public void saveNote(Note note) throws SaveFileException {
         String fileName = note.getId() + ".json"; // 파일이름 지정
         File file = new File(DATA_DIRECTORY, fileName);
         System.out.println("노트객체를 넘겨받은 파일이 생성되었습니다. " + "저장으로 넘어갑니다.");
@@ -39,11 +39,11 @@ public class Storage {
             System.out.println("노트가 저장되었습니다: " + file.getAbsolutePath() + fileName);
         } catch (IOException e) {
             // IOException을 SaveException으로 래핑하여 전달
-            throw new SaveException(note.getId(), e);
+            throw new SaveFileException(note.getId(), e);
         }
     }
 
-    public void deleteNote(int noteId) throws SaveException, NoteNotFoundException {
+    public void deleteNote(int noteId) throws SaveFileException, NoteNotFoundException {
         String fileName = noteId + ". json";
         File file = new File(DATA_DIRECTORY,fileName);
 
@@ -51,7 +51,7 @@ public class Storage {
             throw new NoteNotFoundException(noteId);
         }
         if (!file.delete()){ // 파일이 지워졌는지 체크
-            throw new SaveException(noteId);
+            throw new SaveFileException(noteId);
         }
     }
 
@@ -74,37 +74,33 @@ public class Storage {
         }
     }
 
-    public List<Note> loadAllNotes() {
-        File directory = new File(DATA_DIRECTORY);
-        File[] files = directory.listFiles((dir, name) -> name.endsWith(".json"));
+    public loadAllNotes() {
 
-        List<Note> notes = new ArrayList<>();
-        if (files != null) {
-            ObjectMapper mapper = new ObjectMapper();
-            for (File file : files) {
-                try {
-                    Note note = mapper.readValue(file, Note.class);
-                    notes.add(note);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    }
+
+
+
+    public int loadLastNoteId() throws ReadFileException {
+        File file = new File(LAST_ID_FILE_NAME);
+
+        if(!file.exists()){ // 파일이 없다면 0을 반환
+            return 0;
         }
-        return notes;
+
+        try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+            String lastid = reader.readLine(); // 파일에 있는 숫자를 문자열로
+            return Integer.parseInt(lastid.trim()); // 받은 문자열을 숫자로 반환
+        } catch (IOException | NumberFormatException e){
+         throw new ReadFileException(e);
+        }
     }
 
+    public void saveIdFile(int lastNoteId) throws SaveFileException {
 
-
-    public int loadLastNoteId() {
-
-    }
-
-    public void saveIdFile(int lastNoteId) throws SaveException {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(LAST_ID_FILE_NAME))){
             writer.write(String.valueOf(lastNoteId));
         } catch (IOException e) {
-            throw new SaveException(lastNoteId);
+            throw new SaveFileException(lastNoteId);
         }
-
     }
 }
