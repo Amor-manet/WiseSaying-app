@@ -9,40 +9,33 @@ public class WiseSayingController {
     private Scanner scanner;
 
     public WiseSayingController() {
-        try {
+
             WiseSayingRepository storage = new WiseSayingRepository();// Storage 객체를 한 번만 생성
             wiseService = new WiseSayingService(storage);
             scanner = new Scanner(System.in);
             //System.out.println("컨트롤러가 생성되었음 ");
 
-        } catch (ReadFileException e) {
-            ExceptionHandler.handleException(e);
-        }
     }
 
     public void registerWiseSay() {
-        try {
+
             String newSaying = getStringInput("명언을 입력하세요: ");
             String newAuthor = getStringInput("작가를 입력하세요: ");
             int wisesayId = wiseService.register(newSaying, newAuthor);
             System.out.println( wisesayId + "번 명언이 성공적으로 등록되었습니다.");
-        } catch (EmptyInputException | SaveFileException | ReadFileException e ){
-            ExceptionHandler.handleException(e);
-        }
+
     }
 
     public void deleteWiseSay() {
-        try {
+
             int wisesayId = getWiseSayIdFromUser("삭제할 명언의 ID를 입력하세요: ");
             wiseService.delete(wisesayId);
             System.out.println(wisesayId + "번 명언가 성공적으로 삭제되었습니다.");
-        } catch (InvalidInputFormatException | SayNotFoundException | SaveFileException e) {
-            ExceptionHandler.handleException(e);
-        }
+
     }
 
     public void updateWiseSay() {
-        try {
+
             int wisesayId = getWiseSayIdFromUser("수정할 명언의 ID를 입력하세요: ");
             WiseSaying wisesay = wiseService.load(wisesayId); // 기존에 있던 노트객체를 불러옴
             String newSaying = getStringInput("기존 명언: "+ wisesay.getSaying() +"\n새로운 명언을 입력하세요: ");
@@ -51,32 +44,21 @@ public class WiseSayingController {
             int fixedId = wiseService.update(wisesayId,newSaying,newAuthor);
             System.out.println( fixedId + "번 명언이 성공적으로 수정되었습니다.");
 
-        } catch ( EmptyInputException | InvalidInputFormatException e) { // 입력단계에서 발생하는 에러
-            ExceptionHandler.handleException(e);
-        } catch (SaveFileException | JsonParsingException | SayNotFoundException e) {
-            // 파일 저장, 읽기, 접근 단계에서 발생하는 오류
-            ExceptionHandler.handleException(e);
-        }
     }
 
 
-    private int getWiseSayIdFromUser(String message) throws InvalidInputFormatException{
+    private int getWiseSayIdFromUser(String message) {
         System.out.print(message);
         String input = scanner.nextLine().trim();
-        int wiseSayid;
+        int wiseSayid = Integer.parseInt(input);
 
-        try{
-            wiseSayid = Integer.parseInt(input);
-        } catch (NumberFormatException e){
-            throw new InvalidInputFormatException();
-        }
         if(wiseSayid < 0) {
             System.out.println("ID는 0 이상입니다. ");
         }
         return wiseSayid;
     }
 
-    private String getStringInput(String message) throws EmptyInputException{
+    private String getStringInput(String message) {
         System.out.print(message);
         String input = scanner.nextLine().trim();
         if(input.isEmpty()){
@@ -87,16 +69,14 @@ public class WiseSayingController {
 
     // 코드 체크 필요
     public void buildWiseSay() {
-        try {
+
             wiseService.build();
             System.out.println("모든 명언이 성공적으로 빌드되었습니다.");
-        } catch (BuildFileException | SaveFileException e) {
-            ExceptionHandler.handleException(e);
-        }
+
     }
 
     public void showWiseSayList() {
-        try {
+
             wiseService.build();
             List<WiseSaying> wisesay = wiseService.loadWiseSay();
             // 목록이 비어 있는 경우 처리
@@ -109,9 +89,7 @@ public class WiseSayingController {
             for (WiseSaying wisesay2 : wisesay) {
                 System.out.println(" " + wisesay2.getId() + " / " + wisesay2.getSaying() + " / " + wisesay2.getAuthor());
             }
-        } catch (ReadFileException | BuildFileException | SaveFileException e) {
-            ExceptionHandler.handleException(e);
-        }
+
     }
 
 }
