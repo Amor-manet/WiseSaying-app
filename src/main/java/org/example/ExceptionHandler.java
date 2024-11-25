@@ -7,25 +7,25 @@ public class ExceptionHandler {
     }
 }
 
-class SayNotFoundException extends Exception {
+class SayNotFoundException extends RuntimeException {
     public SayNotFoundException(int noteId) {
         super("해당 ID의 명언이 존재하지 않습니다. ID:" + noteId);
     }
 }
 
-class EmptyInputException extends Exception {
+class EmptyInputException extends RuntimeException {
     public EmptyInputException() {
         super("입력은 비어 있을 수 없습니다.");
     }
 }
 
-class InvalidInputFormatException extends Exception {
+class InvalidInputFormatException extends RuntimeException {
     public InvalidInputFormatException() {
         super("숫자 ID를 입력해주세요. "); // 사용자가 입력한 값을 보여줘도 좋을듯
     }
 }
 
-class SaveFileException extends Exception {
+class SaveFileException extends RuntimeException {
     public SaveFileException(int id) {
         super("파일을 저장하는 중 오류가 발생했습니다. " + id);
     }
@@ -39,7 +39,7 @@ class SaveFileException extends Exception {
     }
 }
 
- class ReadFileException extends Exception {
+ class ReadFileException extends RuntimeException {
     public ReadFileException(int id) {
         super("파일을 읽는 중 오류가 발생했습니다. " + id);
     }
@@ -51,7 +51,7 @@ class SaveFileException extends Exception {
     }
 }
 
-class JsonParsingException extends Exception {
+class JsonParsingException extends RuntimeException {
     public JsonParsingException(Exception cause) {
         super("제이슨이 존재하지만 파일을 읽어 올 수 없습니다. " + cause);
     }
@@ -60,7 +60,7 @@ class JsonParsingException extends Exception {
     }
 }
 
-class BuildFileException extends Exception {
+class BuildFileException extends RuntimeException {
 
     public BuildFileException() {
         super("빌드 파일이 위치할 디렉토리가 없거나 빌드할 파일이 없습니다.");
@@ -71,8 +71,3 @@ class BuildFileException extends Exception {
     }
 }
 
-//class EmptySayingException extends Exception {
-//    public EmptySayingException() {
-//        super("작성된 명언이 없습니다. 명언 등록을 진행해주세요."); // 사용자가 입력한 값을 보여줘도 좋을듯
-//    }
-//}
