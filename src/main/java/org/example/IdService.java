@@ -7,14 +7,14 @@ public class IdService {
         this.repository = storage;
     }
 
-    public int generateId() throws ReadFileException {
+    public int generateId() {
 
         int newid = repository.loadLastWiseSayId() + 1;
 
         return newid;
     }
 
-    public void saveId(int id) throws SaveFileException {
+    public void saveId(int id) {
         repository.saveIdFile(id);
     }
 
