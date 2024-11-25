@@ -28,42 +28,43 @@ public class WiseSayingRepository {
             directory.mkdirs(); // 파일의 상위 디렉토리가 없을 경우 지정한 상위 폴더를 생성
             //System.out.println("디렉토리가 생성되었습니다: " + directory.getPath());
         }
-       // System.out.println("디렉토리가 이미 존재합니다: " + directory.getPath());
+        // System.out.println("디렉토리가 이미 존재합니다: " + directory.getPath());
     }
 
-    public void saveWiseSay(WiseSaying wisesay) throws SaveFileException {
+    public void saveWiseSay(WiseSaying wisesay) {
         String fileName = wisesay.getId() + ".json"; // 파일이름 지정
         File file = new File(DATA_DIRECTORY, fileName);
-       // System.out.println("노트객체를 넘겨받은 파일이 생성되었습니다. " + "저장으로 넘어갑니다.");
-       // System.out.println("파일 경로: "+ DATA_DIRECTORY + "/  \n파일이름: "+fileName);
+        // System.out.println("노트객체를 넘겨받은 파일이 생성되었습니다. " + "저장으로 넘어갑니다.");
+        // System.out.println("파일 경로: "+ DATA_DIRECTORY + "/  \n파일이름: "+fileName);
         try {
             objectMapper.writeValue(file, wisesay); // 명언 객체를 JSON으로 직렬화하여 파일로 저장
-           // System.out.println("노트가 저장되었습니다: " + file.getAbsolutePath() + fileName);
+            // System.out.println("노트가 저장되었습니다: " + file.getAbsolutePath() + fileName);
         } catch (IOException e) {
             // IOException을 SaveException으로 래핑하여 전달
             throw new SaveFileException(wisesay.getId(), e);
         }
     }
 
-    public void deleteWiseSay(int wisesayId) throws SaveFileException, SayNotFoundException {
+    public void deleteWiseSay(int wisesayId) {
         String fileName = wisesayId + ".json";
-        File file = new File(DATA_DIRECTORY,fileName);
+        File file = new File(DATA_DIRECTORY, fileName);
 
-        if (!file.exists()){ // 파일이 존재하는지 체크
+        if (!file.exists()) { // 파일이 존재하는지 체크
             throw new SayNotFoundException(wisesayId);
         }
-        if (!file.delete()){ // 파일이 지워졌는지 체크
+        if (!file.delete()) { // 파일이 지워졌는지 체크
             throw new SaveFileException(wisesayId);
         }
     }
 
-    public WiseSaying loadWiseSayById(int wiseSayId) throws SayNotFoundException, JsonParsingException {
-        String filePath = DATA_DIRECTORY+"/"+wiseSayId+".json";
+    public WiseSaying loadWiseSayById(int wiseSayId) {
+        String filePath = DATA_DIRECTORY + "/" + wiseSayId + ".json";
         File file = new File(filePath);
 
-        if (!file.exists()){ // 파일이 존재하는지 체크
+        if (!file.exists()) { // 파일이 존재하는지 체크
             throw new SayNotFoundException(wiseSayId);
         }
+
         try {
             // JSON 파일을 명언 객체로 반환
             return objectMapper.readValue(file, WiseSaying.class);
@@ -77,24 +78,24 @@ public class WiseSayingRepository {
     }
 
     // 마지막 아이디 불러오기
-    public int loadLastWiseSayId() throws ReadFileException {
+    public int loadLastWiseSayId() {
         File file = new File(LAST_ID_FILE_NAME);
 
-        if(!file.exists()){ // 파일이 없다면 0을 반환
+        if (!file.exists()) { // 파일이 없다면 0을 반환
             return 0;
         }
 
-        try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String lastid = reader.readLine(); // 파일에 있는 숫자를 문자열로
             return Integer.parseInt(lastid.trim()); // 받은 문자열을 숫자로 반환
-        } catch (IOException | NumberFormatException e){
-         throw new ReadFileException(e);
+        } catch (IOException | NumberFormatException e) {
+            throw new ReadFileException(e);
         }
     }
 
-    public void saveIdFile(int lastSayId) throws SaveFileException {
+    public void saveIdFile(int lastSayId) {
 
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(LAST_ID_FILE_NAME))){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LAST_ID_FILE_NAME))) {
             writer.write(String.valueOf(lastSayId));
         } catch (IOException e) {
             throw new SaveFileException(lastSayId);
@@ -102,18 +103,18 @@ public class WiseSayingRepository {
     }
 
     // 데이터 파일을 빌드하는 메소드
-    public void buildDataFile() throws BuildFileException, SaveFileException {
+    public void buildDataFile() {
 
         File directory = new File(DATA_DIRECTORY); // 파일이 저장된 디렉토리
         File buildFile = new File(DATA_DIRECTORY, "data.json");
 
         // 디렉토리 유효성 검사
-        if(!directory.exists() || !directory.isDirectory()){
+        if (!directory.exists() || !directory.isDirectory()) {
             throw new BuildFileException();
         }
         // 제이슨 파일 필터링
         File[] files = directory.listFiles((dir, name) -> name.endsWith(".json") && !name.equals("data.json"));
-        if(files == null || files.length == 0){ // directory.listFiles()이 null 값인 경우, 배열에 넣을 알맞은 파일이 없어서 배일이 0일 경우
+        if (files == null || files.length == 0) { // directory.listFiles()이 null 값인 경우, 배열에 넣을 알맞은 파일이 없어서 배일이 0일 경우
             createEmptyJsonFile(buildFile);
             throw new BuildFileException();
         }
@@ -143,20 +144,21 @@ public class WiseSayingRepository {
         }
     }
 
-    public List<WiseSaying> loadDataFile() throws ReadFileException {
+    public List<WiseSaying> loadDataFile() {
         File dataFile = new File(DATA_DIRECTORY, "data.json");
 
         try {
             // JSON 파일을 명언 객체 리스트로 변환
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(dataFile, new TypeReference<List<WiseSaying>>() {});
+            return objectMapper.readValue(dataFile, new TypeReference<List<WiseSaying>>() {
+            });
         } catch (IOException e) {
             throw new ReadFileException(e);
         }
     }
 
     // 빈 JSON 파일을 생성하는 메서드
-    private void createEmptyJsonFile(File buildFile) throws BuildFileException {
+    private void createEmptyJsonFile(File buildFile) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -166,7 +168,6 @@ public class WiseSayingRepository {
             throw new BuildFileException();
         }
     }
-
 
 
 }
