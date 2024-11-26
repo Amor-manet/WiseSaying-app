@@ -1,9 +1,11 @@
-package org.example;
+package domain.wiseSaying.repository;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import common.exception.*;
+import domain.wiseSaying.entity.WiseSaying;
 
 import java.io.*;
 import java.util.ArrayList;

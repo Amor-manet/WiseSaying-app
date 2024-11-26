@@ -1,4 +1,9 @@
-package org.example;
+package domain.wiseSaying.controller;
+
+import common.exception.EmptyInputException;
+import domain.wiseSaying.entity.WiseSaying;
+import domain.wiseSaying.repository.WiseSayingRepository;
+import domain.wiseSaying.service.WiseSayingService;
 
 import java.util.List;
 import java.util.Scanner;

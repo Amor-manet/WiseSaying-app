@@ -1,4 +1,4 @@
-package org.example;
+package domain.wiseSaying.entity;
 
 public class WiseSaying {
     private int id; // 아이디

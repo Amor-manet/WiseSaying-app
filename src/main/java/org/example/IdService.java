@@ -1,5 +1,7 @@
 package org.example;
 
+import domain.wiseSaying.repository.WiseSayingRepository;
+
 public class IdService {
     private WiseSayingRepository repository;
 
@@ -9,9 +11,7 @@ public class IdService {
 
     public int generateId() {
 
-        int newid = repository.loadLastWiseSayId() + 1;
-
-        return newid;
+        return repository.loadLastWiseSayId() + 1;
     }
 
     public void saveId(int id) {

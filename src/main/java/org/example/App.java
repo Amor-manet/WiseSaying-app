@@ -1,5 +1,8 @@
 package org.example;
 
+import common.exception.ExceptionHandler;
+import domain.wiseSaying.controller.WiseSayingController;
+
 import java.util.Scanner;
 
 public class App {
@@ -14,7 +17,7 @@ public class App {
         while (true) {
             try {
                 System.out.println("== 명언 앱 ==");
-                System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 종료): ");
+                System.out.print("명령어를 입력하세요 (등록, 삭제, 수정, 목록, 빌드, 종료): ");
 
                 String command = scanner.nextLine();
 

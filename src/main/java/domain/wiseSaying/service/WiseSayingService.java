@@ -1,4 +1,8 @@
-package org.example;
+package domain.wiseSaying.service;
+
+import domain.wiseSaying.entity.WiseSaying;
+import domain.wiseSaying.repository.WiseSayingRepository;
+import org.example.IdService;
 
 import java.util.List;
 
